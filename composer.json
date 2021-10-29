@@ -1,0 +1,25 @@
+{
+    "name": "gingteam/redbean",
+    "description": "Extra RedBean ORM",
+    "type": "library",
+    "require": {
+        "php": ">=8.0",
+        "gabordemooij/redbean": "^5.7"
+    },
+    "require-dev": {
+        "pestphp/pest": "^1.20"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "GingTeam\\RedBean\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "gingteam",
+            "email": "thanh1101dev@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
