@@ -51,7 +51,7 @@ final class QueryBuilder
     public function get($what = '')
     {
         $what = 'get'.ucfirst($what);
-        $result = $this->adapter->$what($this->sql(), $this->binding());
+        $result = $this->adapter->$what($this->toSql(), $this->getBindings());
         $this->end();
 
         return $result;
@@ -77,7 +77,7 @@ final class QueryBuilder
 
     public function dump()
     {
-        $list = [$this->sql(), $this->binding()];
+        $list = [$this->toSql(), $this->getBindings()];
         $this->end();
 
         return $list;
@@ -85,11 +85,11 @@ final class QueryBuilder
 
     public function nest(QueryBuilder $qb)
     {
-        [$sql, $params] = $qb->dump();
+        [$sql, $bindings] = $qb->dump();
 
         $this->sql[] = $sql;
 
-        $this->params += $params;
+        $this->params += $bindings;
 
         return $this;
     }
@@ -122,12 +122,12 @@ final class QueryBuilder
         return new self($this->adapter);
     }
 
-    private function sql(): string
+    public function toSql(): string
     {
         return implode(' ', $this->sql);
     }
 
-    private function binding(): array
+    public function getBindings(): array
     {
         return $this->params;
     }
