@@ -7,7 +7,6 @@ RedBeanPHP is an easy to use ORM tool for PHP.
 
 * Automatically creates tables and columns as you go
 * No configuration, just fire and forget
-* No complicated package tools, no autoloaders, just ONE file
 
 Installation
 ------------
