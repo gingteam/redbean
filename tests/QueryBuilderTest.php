@@ -9,7 +9,7 @@ beforeAll(function() {
 
 test('test 1', function () {
     $qb = R::createQueryBuilder();
-    [$sql, $bindings] = $qb->start()
+    [$sql, $bindings] = $qb
         ->select('*')
         ->from('book')
         ->where('id > ?')
@@ -32,11 +32,25 @@ test('test 2', function () {
 
     $qb = R::createQueryBuilder();
 
-    $result = $qb->start()
+    $result = $qb
         ->select('*')
         ->from('book')
         ->get();
 
     $this->assertCount(1, $result);
     $this->assertSame('Vũ Trọng Phụng', $book->author->name);
+});
+
+test('test 3', function () {
+    $qb = R::createQueryBuilder();
+
+    $sql = $qb
+        ->select('*')
+        ->from('book')
+        ->where('id = ?')
+            ->put(1);
+
+    $this->assertSame('SELECT * FROM book WHERE id = ?', $sql->toSql());
+    $qb->reset();
+    $this->assertEmpty($sql->toSql());
 });
