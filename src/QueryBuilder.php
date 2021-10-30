@@ -22,9 +22,36 @@ final class QueryBuilder
     public function __call(string $name, array $args = [])
     {
         $name = strtoupper(implode(' ', preg_split('/(?=[A-Z])/', $name)));
-        $this->sql[] = $name.' '.implode(',', $args);
+        $this->sql[] = $name.' '.implode(', ', $args);
 
         return $this;
+    }
+
+    public function insert(string $table, array $columns)
+    {
+        $this->sql[] = sprintf(
+            'INSERT INTO %s (%s) VALUES (%s)',
+            $table,
+            implode(', ', $columns),
+            $this->slots(count($columns))
+        );
+
+        return $this;
+    }
+
+    public function update(string $table, array $columns)
+    {
+        array_walk($columns, static function (&$column) {
+            $column .= ' = ?';
+        });
+
+        $this->sql[] = sprintf(
+            'UPDATE %s SET %s',
+            $table,
+            implode(', ', $columns)
+        );
+
+       return $this;
     }
 
     public function put($param)
@@ -34,13 +61,31 @@ final class QueryBuilder
         return $this;
     }
 
-    public function get($what = '')
+    public function get()
     {
-        $what = 'get'.ucfirst($what);
-        $result = $this->adapter->$what($this->toSql(), $this->getBindings());
+        $result = $this->adapter->get($this->toSql(), $this->getBindings());
         $this->reset();
 
         return $result;
+    }
+
+    public function getOne()
+    {
+        $result = $this->adapter->getRow($this->toSql(), $this->getBindings());
+        $this->reset();
+
+        return $result;
+    }
+
+    public function getLastInsertId(): int
+    {
+        return $this->adapter->getInsertID();
+    }
+
+    public function execute()
+    {
+        $this->adapter->exec($this->toSql(), $this->getBindings());
+        $this->reset();
     }
 
     public function reset()
@@ -93,7 +138,7 @@ final class QueryBuilder
 
     public function slots(int $number)
     {
-        return implode(',', array_fill(0, $number > 0 ? $number : 0, '?'));
+        return implode(', ', array_fill(0, $number > 0 ? $number : 0, '?'));
     }
 
     public function create()
