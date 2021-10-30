@@ -32,13 +32,36 @@ test('test 2', function () {
 
     $qb = R::createQueryBuilder();
 
+    // insert
+    $qb->insert('book', ['name', 'author_id'])
+            ->put('Book #2')
+            ->put(1)
+        ->execute();
+    $lastId = $qb->getLastInsertId();
+
+    // update
+    $qb->update('book', ['name'])
+            ->put('Book #1')
+        ->where('id = ?')
+            ->put(1)
+        ->execute();
+
     $result = $qb
         ->select('*')
         ->from('book')
         ->get();
 
-    $this->assertCount(1, $result);
+    $book1 = $qb
+        ->select('name')
+        ->from('book')
+        ->where('id = ?')
+            ->put(1)
+        ->getOne();
+
+    $this->assertCount(2, $result);
     $this->assertSame('Vũ Trọng Phụng', $book->author->name);
+    $this->assertSame('Book #1', $book1['name']);
+    $this->assertEquals(2, $lastId);
 });
 
 test('test 3', function () {
