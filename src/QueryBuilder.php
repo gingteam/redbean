@@ -19,7 +19,7 @@ final class QueryBuilder
         $this->adapter = $adapter;
     }
 
-    public function __call(string $name, array $args = [])
+    public function __call(string $name, array $args = []): self
     {
         $name = strtoupper(implode(' ', preg_split('/(?=[A-Z])/', $name)));
         $this->sql[] = $name.' '.implode(', ', $args);
@@ -27,41 +27,14 @@ final class QueryBuilder
         return $this;
     }
 
-    public function insert(string $table, array $columns)
-    {
-        $this->sql[] = sprintf(
-            'INSERT INTO %s (%s) VALUES (%s)',
-            $table,
-            implode(', ', $columns),
-            $this->slots(count($columns))
-        );
-
-        return $this;
-    }
-
-    public function update(string $table, array $columns)
-    {
-        array_walk($columns, static function (&$column) {
-            $column .= ' = ?';
-        });
-
-        $this->sql[] = sprintf(
-            'UPDATE %s SET %s',
-            $table,
-            implode(', ', $columns)
-        );
-
-       return $this;
-    }
-
-    public function put($param)
+    public function put($param): self
     {
         $this->params[] = $param;
 
         return $this;
     }
 
-    public function get()
+    public function get(): array
     {
         $result = $this->adapter->get($this->toSql(), $this->getBindings());
         $this->reset();
@@ -69,7 +42,7 @@ final class QueryBuilder
         return $result;
     }
 
-    public function getOne()
+    public function getOne(): array
     {
         $result = $this->adapter->getRow($this->toSql(), $this->getBindings());
         $this->reset();
@@ -82,13 +55,13 @@ final class QueryBuilder
         return $this->adapter->getInsertID();
     }
 
-    public function execute()
+    public function execute(): void
     {
         $this->adapter->exec($this->toSql(), $this->getBindings());
         $this->reset();
     }
 
-    public function reset()
+    public function reset(): self
     {
         $this->sql = [];
         $this->params = [];
@@ -96,14 +69,14 @@ final class QueryBuilder
         return $this;
     }
 
-    public function raw(string $sql)
+    public function raw(string $sql): self
     {
         $this->sql[] = $sql;
 
         return $this;
     }
 
-    public function dump()
+    public function dump(): array
     {
         $list = [$this->toSql(), $this->getBindings()];
         $this->reset();
@@ -111,7 +84,7 @@ final class QueryBuilder
         return $list;
     }
 
-    public function nest(QueryBuilder $qb)
+    public function nest(QueryBuilder $qb): self
     {
         [$sql, $bindings] = $qb->dump();
 
@@ -122,26 +95,26 @@ final class QueryBuilder
         return $this;
     }
 
-    public function open()
+    public function open(): self
     {
         $this->sql[] = '(';
 
         return $this;
     }
 
-    public function close()
+    public function close(): self
     {
         $this->sql[] = ')';
 
         return $this;
     }
 
-    public function slots(int $number)
+    public function slots(int $number): string
     {
         return implode(', ', array_fill(0, $number > 0 ? $number : 0, '?'));
     }
 
-    public function create()
+    public function create(): QueryBuilder
     {
         return new self($this->adapter);
     }

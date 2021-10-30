@@ -33,14 +33,17 @@ test('test 2', function () {
     $qb = R::createQueryBuilder();
 
     // insert
-    $qb->insert('book', ['name', 'author_id'])
+    $qb->insert()
+        ->into('book (name, author_id)')
+        ->values('(?, ?)')
             ->put('Book #2')
             ->put(1)
         ->execute();
     $lastId = $qb->getLastInsertId();
 
     // update
-    $qb->update('book', ['name'])
+    $qb->update('book')
+        ->set('name = ?')
             ->put('Book #1')
         ->where('id = ?')
             ->put(1)
