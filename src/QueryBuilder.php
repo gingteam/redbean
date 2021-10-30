@@ -10,8 +10,6 @@ final class QueryBuilder
 {
     private Adapter $adapter;
 
-    private bool $running = false;
-
     private array $sql = [];
 
     private array $params = [];
@@ -24,19 +22,7 @@ final class QueryBuilder
     public function __call(string $name, array $args = [])
     {
         $name = strtoupper(implode(' ', preg_split('/(?=[A-Z])/', $name)));
-
-        if ($this->running) {
-            $this->sql[] = $name.' '.implode(',', $args);
-
-            return $this;
-        } else {
-            return $this->adapter->getCell('SELECT '.$name.'('.implode(',', $args).')');
-        }
-    }
-
-    public function start()
-    {
-        $this->running = true;
+        $this->sql[] = $name.' '.implode(',', $args);
 
         return $this;
     }
@@ -52,25 +38,22 @@ final class QueryBuilder
     {
         $what = 'get'.ucfirst($what);
         $result = $this->adapter->$what($this->toSql(), $this->getBindings());
-        $this->end();
+        $this->reset();
 
         return $result;
     }
 
-    public function end()
+    public function reset()
     {
         $this->sql = [];
         $this->params = [];
-        $this->running = false;
 
         return $this;
     }
 
-    public function addRawSQL(string $sql)
+    public function raw(string $sql)
     {
-        if ($this->running) {
-            $this->sql[] = $sql;
-        }
+        $this->sql[] = $sql;
 
         return $this;
     }
@@ -78,7 +61,7 @@ final class QueryBuilder
     public function dump()
     {
         $list = [$this->toSql(), $this->getBindings()];
-        $this->end();
+        $this->reset();
 
         return $list;
     }
@@ -96,18 +79,14 @@ final class QueryBuilder
 
     public function open()
     {
-        if ($this->running) {
-            $this->sql[] = '(';
-        }
+        $this->sql[] = '(';
 
         return $this;
     }
 
     public function close()
     {
-        if ($this->running) {
-            $this->sql[] = ')';
-        }
+        $this->sql[] = ')';
 
         return $this;
     }
