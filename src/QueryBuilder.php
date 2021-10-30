@@ -27,33 +27,6 @@ final class QueryBuilder
         return $this;
     }
 
-    public function insert(string $table, array $columns)
-    {
-        $this->sql[] = sprintf(
-            'INSERT INTO %s (%s) VALUES (%s)',
-            $table,
-            implode(', ', $columns),
-            $this->slots(count($columns))
-        );
-
-        return $this;
-    }
-
-    public function update(string $table, array $columns)
-    {
-        array_walk($columns, static function (&$column) {
-            $column .= ' = ?';
-        });
-
-        $this->sql[] = sprintf(
-            'UPDATE %s SET %s',
-            $table,
-            implode(', ', $columns)
-        );
-
-       return $this;
-    }
-
     public function put($param)
     {
         $this->params[] = $param;
