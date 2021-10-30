@@ -2,7 +2,7 @@
 
 use GingTeam\RedBean\Facade as R;
 
-beforeAll(function() {
+beforeAll(function () {
     file_put_contents(__DIR__.'/test.db', '');
     R::setup('sqlite:'.__DIR__.'/test.db');
 });
@@ -80,3 +80,23 @@ test('test 3', function () {
     $qb->reset();
     $this->assertEmpty($sql->toSql());
 });
+
+test('test 4', function () {
+    $role = R::dispense('role');
+    $role->name = 'warrior';
+    R::store($role);
+
+    $player1 = R::dispense('player');
+    $player1->name = 'dze';
+    $player1->role = $role;
+
+    $player2 = R::dispense('player');
+    $player2->name = 'ging';
+    $player2->role = $role;
+
+    R::storeAll([$player1, $player2]);
+
+    $this->assertEquals(2, R::count('player'));
+    $this->assertEquals($player1->role->name, $player2->role->name);
+});
+
