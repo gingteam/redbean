@@ -31,7 +31,7 @@ R::store($book);
 
 $qb = R::createQueryBuilder();
 
-$data = $qb->start()
+$data = $qb
     ->select('*')
     ->from('book')
     ->get();
