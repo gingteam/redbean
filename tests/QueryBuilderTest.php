@@ -100,3 +100,26 @@ test('test 4', function () {
     $this->assertEquals($player1->role->name, $player2->role->name);
 });
 
+test('test 5', function () {
+    [$page1, $page2, $page3] = R::dispense('page', 3);
+    $page1->content = 'Page #1';
+    $page2->content = 'Page #2';
+    $page3->content = 'Page #3';
+    R::storeAll([$page1, $page2, $page3]);
+
+    $book = R::dispense('book');
+    $book->name = 'Thiên đường tung tăng';
+    // 'own' and 'shared'
+    $book->ownPage[] = $page1;
+    $book->ownPage[] = $page2;
+    $book->ownPage[] = $page3;
+    R::store($book);
+
+    // Get list page of book with page.id > 1
+    $pages = $book
+        ->withCondition('page.id > ?', [1])
+        ->via('page')
+        ->ownPage;
+
+    $this->assertCount(2, $pages);
+});
