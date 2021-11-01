@@ -34,7 +34,7 @@ final class QueryBuilder
         return $this;
     }
 
-    public function get(): array
+    public function fetch(): array
     {
         $result = $this->adapter->get($this->toSql(), $this->getBindings());
         $this->reset();
@@ -42,9 +42,17 @@ final class QueryBuilder
         return $result;
     }
 
-    public function getOne(): array
+    public function fetchSingle(): array
     {
         $result = $this->adapter->getRow($this->toSql(), $this->getBindings());
+        $this->reset();
+
+        return $result;
+    }
+
+    public function fetchFirstColumn(): array
+    {
+        $result = $this->adapter->getCol($this->toSql(), $this->getBindings());
         $this->reset();
 
         return $result;

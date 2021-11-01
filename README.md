@@ -34,7 +34,7 @@ $qb = R::createQueryBuilder();
 $data = $qb
     ->select('*')
     ->from('book')
-    ->get();
+    ->fetch();
 ```
 
 Yep, it's that simple.

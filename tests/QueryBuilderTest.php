@@ -52,14 +52,14 @@ test('test 2', function () {
     $result = $qb
         ->select('*')
         ->from('book')
-        ->get();
+        ->fetch();
 
     $book1 = $qb
         ->select('name')
         ->from('book')
         ->where('id = ?')
             ->put(1)
-        ->getOne();
+        ->fetchSingle();
 
     $this->assertCount(2, $result);
     $this->assertSame('Vũ Trọng Phụng', $book->author->name);
@@ -121,5 +121,12 @@ test('test 5', function () {
         ->via('page')
         ->ownPage;
 
+    $qb = R::createQueryBuilder();
+    $result = $qb
+        ->selectCount('(*)')
+        ->from('page')
+        ->fetchFirstColumn();
+
     $this->assertCount(2, $pages);
+    $this->assertEquals(3, (int) reset($result));
 });
