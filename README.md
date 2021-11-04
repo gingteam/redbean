@@ -2,6 +2,9 @@ RedBeanPHP 5
 ============
 
 [![Build Status](https://travis-ci.org/gabordemooij/redbean.svg?branch=master)](https://travis-ci.org/gabordemooij/redbean)
+[![phpstan](https://github.com/gingteam/redbean/actions/workflows/phpstan.yml/badge.svg)](https://github.com/gingteam/redbean/actions/workflows/phpstan.yml)
+[![test](https://github.com/gingteam/redbean/actions/workflows/test.yml/badge.svg)](https://github.com/gingteam/redbean/actions/workflows/test.yml)
+
 
 RedBeanPHP is an easy to use ORM tool for PHP.
 
