@@ -7,7 +7,8 @@
         "gabordemooij/redbean": "^5.7"
     },
     "require-dev": {
-        "pestphp/pest": "^1.20"
+        "pestphp/pest": "^1.20",
+        "phpstan/phpstan": "^1.0"
     },
     "license": "MIT",
     "autoload": {
@@ -21,5 +22,9 @@
             "email": "thanh1101dev@gmail.com"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "scripts": {
+        "test": "pest",
+        "phpstan": "phpstan analyse --level 6 src"
+    }
 }

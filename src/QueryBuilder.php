@@ -10,8 +10,10 @@ final class QueryBuilder
 {
     private Adapter $adapter;
 
+    /** @var array<int,string> */
     private array $sql = [];
 
+    /** @var array<int,float|int|string> */
     private array $params = [];
 
     public function __construct(Adapter $adapter)
@@ -19,6 +21,7 @@ final class QueryBuilder
         $this->adapter = $adapter;
     }
 
+    /** @param array<int,string> $args */
     public function __call(string $name, array $args = []): self
     {
         $name = strtoupper(implode(' ', preg_split('/(?=[A-Z])/', $name)));
@@ -27,13 +30,14 @@ final class QueryBuilder
         return $this;
     }
 
-    public function put($param): self
+    public function put(float|int|string $param): self
     {
         $this->params[] = $param;
 
         return $this;
     }
 
+    /** @return array<int,array<string,string>> */
     public function fetch(): array
     {
         $result = $this->adapter->get($this->toSql(), $this->getBindings());
@@ -42,6 +46,7 @@ final class QueryBuilder
         return $result;
     }
 
+    /** @return array<string,string> */
     public function fetchSingle(): array
     {
         $result = $this->adapter->getRow($this->toSql(), $this->getBindings());
@@ -50,6 +55,7 @@ final class QueryBuilder
         return $result;
     }
 
+    /** @return array<int,string> */
     public function fetchFirstColumn(): array
     {
         $result = $this->adapter->getCol($this->toSql(), $this->getBindings());
@@ -84,6 +90,7 @@ final class QueryBuilder
         return $this;
     }
 
+    /** @return array{0:string,1:array<float|int|string>} */
     public function dump(): array
     {
         $list = [$this->toSql(), $this->getBindings()];
@@ -132,6 +139,7 @@ final class QueryBuilder
         return implode(' ', $this->sql);
     }
 
+    /** @return array<int,float|int|string> */
     public function getBindings(): array
     {
         return $this->params;

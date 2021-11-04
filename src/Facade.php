@@ -8,7 +8,7 @@ use RedBeanPHP\Facade as RedBeanPHPFacade;
 
 final class Facade extends RedBeanPHPFacade
 {
-    public static function createQueryBuilder()
+    public static function createQueryBuilder(): QueryBuilder
     {
         return new QueryBuilder(self::getDatabaseAdapter());
     }
