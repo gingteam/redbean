@@ -1,6 +1,7 @@
 <?php
 
 use GingTeam\RedBean\Facade as R;
+use RedBeanPHP\OODBBean;
 
 beforeAll(function () {
     file_put_contents(__DIR__.'/test.db', '');
@@ -129,4 +130,11 @@ test('test 5', function () {
 
     $this->assertCount(2, $pages);
     $this->assertEquals(3, (int) reset($result));
+});
+
+test('test 6', function () {
+    $user = model('user');
+    $multiUser = model('user', 2);
+    expect($user)->toBeInstanceOf(OODBBean::class);
+    expect($multiUser)->toBeArray();
 });

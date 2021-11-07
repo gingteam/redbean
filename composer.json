@@ -14,7 +14,8 @@
     "autoload": {
         "psr-4": {
             "GingTeam\\RedBean\\": "src/"
-        }
+        },
+        "files": ["src/functions.php"]
     },
     "authors": [
         {
