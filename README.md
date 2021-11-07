@@ -27,7 +27,7 @@ use GingTeam\RedBean\Facade as R;
 
 R::setup('sqlite:'.__DIR__.'/data.db');
 
-$book = R::dispense('book');
+$book = model('book');
 $book->author = 'Santa Claus';
 $book->title = 'Secrets of Christmas';
 R::store($book);
