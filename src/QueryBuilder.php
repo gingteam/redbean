@@ -90,7 +90,7 @@ final class QueryBuilder
         return $this;
     }
 
-    /** @return array{0:string,1:array<float|int|string>} */
+    /** @return array{0:string,1:array<int,float|int|string>} */
     public function dump(): array
     {
         $list = [$this->toSql(), $this->getBindings()];
