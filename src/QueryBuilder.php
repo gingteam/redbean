@@ -21,11 +21,13 @@ final class QueryBuilder
         $this->adapter = $adapter;
     }
 
-    /** @param array<int,string> $args */
-    public function __call(string $name, array $args = []): self
+    /** @param array<int,string>|null $args */
+    public function __call(string $name, ?array $args): self
     {
-        $name = strtoupper(implode(' ', preg_split('/(?=[A-Z])/', $name)));
-        $this->sql[] = $name.' '.implode(', ', $args);
+        if (false !== $name = preg_split('/(?=[A-Z])/', $name)) {
+            $name = strtoupper(implode(' ', $name));
+            $this->sql[] = $name.' '.implode(', ', $args);
+        }
 
         return $this;
     }
