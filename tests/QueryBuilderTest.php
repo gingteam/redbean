@@ -138,3 +138,14 @@ test('test 6', function () {
     expect($user)->toBeInstanceOf(OODBBean::class);
     expect($multiUser)->toBeArray();
 });
+
+test('test 7', function () {
+    $user = R::findOneOr('user', function($user) {
+        $user->name = 'gingdev';
+        R::store($user);
+
+        return $user;
+    }, 'id = ?', [1]);
+
+    $this->assertSame('gingdev', $user->name);
+});
